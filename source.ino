@@ -1,6 +1,5 @@
 /*
- * Author:  Radim Lipka
- * Project: ESP32, School project
+ * Project: ESP32, School project - BUT FIT, PDS
  * Sensors: DHT11, AM312, LED diode
  */
 
@@ -17,11 +16,11 @@
 
 /********************** VARIABLES & DEFINES *****************************/
 // WIFI Access point information
-#define WLAN_SSID "Brloh"
-#define WLAN_PASS "Kokokodak"
+#define WLAN_SSID "Project"
+#define WLAN_PASS "Project0"
 
 // MQTT server information
-#define MQTT_SERVER "192.168.100.101"
+#define MQTT_SERVER "192.168.100.120"
 #define MQTT_PORT 1883
 #define MQTT_USER "Project"
 #define MQTT_PASS "Project"
@@ -35,7 +34,8 @@
 // Values from sensors
 float temperature = 0;
 float humidity = 0;
-bool  motion = false;
+int  lastMotionValue = 0;
+bool turnedOnBySwitch = 0;
 
 // Instances of external libraries
 DHT sensorDHT(PINDHT, DHT11);
@@ -50,24 +50,22 @@ char * TOPIC_LED_STATUS = "project/led/status";
 char * TOPIC_LED_SWITCH = "project/led/switch";
 
 // Measuring delays
-#define DELAY_TEMP_HUM 10000 // miliseconds
-#define DELAY_MOTION 100 // miliseconds
+#define DELAY_TEMP_HUM 10000 // milliseconds
+#define DELAY_MOTION 100     // milliseconds
 
 // Timers
 long timerTempHum = 0;
 long timerMotion = 0;
 
-// Subscribed message
+// Subscribed message (must allocate space)
 char message[35];
-
-// Help variables
-int lastMotionValue = 0;
-bool turnedOnBySwitch = 0;
 /************************ GLOBAL VARIABLES ******************************/
 
+// Declarations
 void mqttReceiving(char * topic, byte * payload, unsigned int length);
 void mqttReconnect();
 
+// First of all is called setup
 void setup() {
 
   // --- Setting serial communication ---
@@ -94,11 +92,11 @@ void setup() {
   mqttClient.setServer(MQTT_SERVER, MQTT_PORT);
   mqttClient.setCallback(mqttReceiving);  // When received subscribed topics
 
-  // --- PIN settings
+  // --- PIN settings ---
   pinMode(PINLED, OUTPUT);
   pinMode(PINMOT, INPUT);
 
-  // --- Sensors settings
+  // --- Sensors settings ---
   sensorDHT.begin();
 }
 
@@ -200,7 +198,7 @@ void mqttReceiving(char * topic, byte * payload, unsigned int length) {
   }
 }
 
-// When connection to server is lsot, we need to reconnect
+// When connection to MQTT server is lsot, we need to reconnect and publish/subscribe our topics
 void mqttReconnect() {
   
   // Loop until reconnected

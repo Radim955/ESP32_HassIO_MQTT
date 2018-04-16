@@ -23,11 +23,13 @@ frontend:
 # Enables configuration UI
 config:
 
+# Enables MQTT
 mqtt:
   broker: core-mosquitto
 
+# Password to HTTP Interface
 http:
-  api_password: HomeHeslo
+  api_password: Project
   # Secrets are defined in the file secrets.yaml
   # api_password: !secret http_password
   # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
@@ -60,6 +62,8 @@ map:
 # Track the sun
 sun:
 
+# ==================== SENSORS IMPLEMENTATION ====================
+
 sensor:
 # Weather prediction
   - platform: yr
@@ -85,7 +89,7 @@ sensor:
     payload_off: "0"
 
 light:
-# Light in living room
+# Light
   - platform: mqtt
     name: 'Light'
     state_topic: 'project/led/status'
@@ -101,13 +105,8 @@ light:
     rgb: false
     optimistic: false
     
-# Text to speech
-#tts:
-#  - platform: google
-
-# Cloud
-#cloud:
-
+    
+    
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
