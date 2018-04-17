@@ -201,6 +201,20 @@ void mqttReceiving(char * topic, byte * payload, unsigned int length) {
 // When connection to MQTT server is lsot, we need to reconnect and publish/subscribe our topics
 void mqttReconnect() {
   
+  if(WiFi.status() != WL_CONNECTED) {
+    
+    Serial.println("Connection to WIFI AP was lost. Reconnecting: ");
+    WiFi.disconnect();
+    
+    while (WiFi.status() != WL_CONNECTED) {
+      WiFi.begin(WLAN_SSID, WLAN_PASS);
+      Serial.print(".");
+      delay(5000);
+    }
+
+    Serial.println("Reconnected succesfully!");
+  }
+
   // Loop until reconnected
   while (!mqttClient.connected()) {
     

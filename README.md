@@ -33,3 +33,32 @@ ESP32 poté funguje jako MQTT client (přes WIFI), který přispívá (publish),
 
 - PubSubClient (MQTT Client). Dostupná zde: https://github.com/knolleary/pubsubclient.
 - DHT11 library (Ovládání senzoru DHT11). Dostupná zde: https://github.com/adafruit/DHT-sensor-library.
+
+## MQTT Protokol v projektu
+
+Nejprve je potřeba se připojit k MQTT serveru. To se provádí pomocí ID zprávy Connect. Pro odpojení se od MQTT serveru pak pomocí zprávy Disconnect.
+
+### Subscribe
+
+Pomocí této zprávy se zaregistrujeme u MQTT Brokeru k odběru zpráv od ostatních zařízení v síti. Používáme k tomu tzv. Topic. V projektu byly použity následující:
+
+- project/led/switch
+
+Hodnota
+
+### Publish
+
+Pomocí této zprávy sdílíme informace MQTT Brokeru, který pak rozesílá tuto zprávu ostatním v síti, kteří náš topic odebírají. V projektu jsou sdíleny následující Topicy:
+
+- project/temperature
+- project/humidity
+- project/motion
+- project/led/status
+
+### Hodnoty
+
+S každou zprávou, která nese hodnoty se tedy odesílá Topic a samotná data. Data osvětlení se odesílají jako 0 nebo 1 (zhasnuto, rozsvíceno), data senzoru pohybu jako 0 nebo 1 (žádný pohyb, pohyb), data teploty a vlhkosti jako desetinná čísla (s desetinnou tečkou). 
+
+## Upozornění
+                                                                                                            
+Dokumentace ve složce /doc je dokumentace veřejně dostupná z dostupných materiálů a slouží pro lepší zorientování se v použitých zařízeních. Pro aktuální verze najděte prosím dokumentaci na stránkách výrobce. Nejedná se o vlastní dílo!
